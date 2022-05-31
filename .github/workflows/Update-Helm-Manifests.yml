@@ -1,0 +1,59 @@
+name: Update Helm Manifests
+
+on:
+  push:
+    branches:
+      - 'main'
+    paths:
+      - 'manifests/**'
+
+concurrency: helm-manifest-updates
+
+jobs:
+  copy-files:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          path: 'src'
+          ref: 'main'
+          persist-credentials: false
+
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          path: 'dest'
+          ref: 'main'
+          repository: 'projectkeas/helm'
+          token: ${{ secrets.BOT_TOKEN }}
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Copy common files to new repo
+        shell: bash
+        run: cp -rvT src/manifest/ dest/charts/helm/ingestion/event-types/spacelift
+
+      - name: Check For New Files
+        id: newFiles
+        shell: bash
+        working-directory: dest
+        run: |
+          git add -A
+          git status --porcelain | wc -l
+          if [[ $(git status --porcelain | wc -l) -gt 0 ]]; then
+            echo "::set-output name=hasNewFiles::true"
+          else
+            echo "::set-output name=hasNewFiles::false"
+          fi
+
+      - name: Push New Files
+        if: ${{ steps.newFiles.outputs.hasNewFiles == 'true' }}
+        shell: bash
+        working-directory: dest
+        run: |
+          git config --global user.name "keas [bot]"
+          git config --global user.email "${{ secrets.BOT_EMAIL}}"
+          git commit -m "maint: Updated common files from ref: projectkeas/.engineering@$GITHUB_SHA"
+          git push
+
