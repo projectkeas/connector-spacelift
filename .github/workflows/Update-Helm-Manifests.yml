@@ -6,6 +6,7 @@ on:
       - 'main'
     paths:
       - 'manifests/**'
+      - '.github/workflows/Update-Helm-Manifests.yml'
 
 concurrency: helm-manifest-updates
 
@@ -32,7 +33,9 @@ jobs:
 
       - name: Copy common files to new repo
         shell: bash
-        run: cp -rvT src/manifests/ dest/charts/helm/ingestion/event-types/spacelift
+        run: |
+          mkdir -p dest/charts/helm/ingestion/event-types/spacelift
+          cp -rvT src/manifests/ dest/charts/helm/ingestion/event-types/spacelift
 
       - name: Check For New Files
         id: newFiles
