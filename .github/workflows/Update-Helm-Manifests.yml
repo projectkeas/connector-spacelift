@@ -34,8 +34,8 @@ jobs:
       - name: Copy common files to new repo
         shell: bash
         run: |
-          mkdir -p dest/charts/helm/ingestion/event-types/spacelift
-          cp -rvT src/manifests/ dest/charts/helm/ingestion/event-types/spacelift
+          mkdir -p dest/charts/ingestion/event-types/spacelift
+          cp -rvT src/manifests/ dest/charts/ingestion/event-types/spacelift
 
       - name: Check For New Files
         id: newFiles
