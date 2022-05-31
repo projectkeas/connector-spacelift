@@ -8,12 +8,12 @@ import (
 )
 
 func main() {
-	app := server.New("appName")
+	app := server.New("connector-spacelift")
 
 	app.WithEnvironmentVariableConfiguration("KEAS_")
 
-	app.WithConfigMap("config-1")
-	app.WithSecret("secret-1")
+	app.WithConfigMap("connector-spacelift-cm")
+	app.WithSecret("connector-spacelift-secret")
 
 	app.ConfigureHandlers(func(f *fiber.App, server *server.Server) {
 		f.Get("/", func(c *fiber.Ctx) error {
