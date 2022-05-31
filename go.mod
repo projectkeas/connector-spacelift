@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/gofiber/fiber/v2 v2.34.0
-	github.com/projectkeas/sdks-service v0.0.0-20220531192121-767a20477bd1
+	github.com/projectkeas/sdks-service v0.0.0-20220531224621-88295975a895
 )
 
 require (
