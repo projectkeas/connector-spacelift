@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/gofiber/fiber/v2 v2.34.0
-	github.com/projectkeas/sdks-service v0.0.0-20220602094859-d1e8a40e38cd
+	github.com/projectkeas/sdks-service v0.0.0-20220602135911-dbbac07eafcd
 	go.uber.org/zap v1.21.0
 )
 
