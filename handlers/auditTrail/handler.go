@@ -51,7 +51,7 @@ func New(server *server.Server) func(c *fiber.Ctx) error {
 		}
 
 		statusCode, responseBody, err := httpRequest.PostJson(targetUri, envelope, map[string]string{
-			"Authentication": "ApiKey " + apiKey,
+			"Authorization": "ApiKey " + apiKey,
 		})
 
 		c.Response().Header.Set("Content-Type", "application/json")
