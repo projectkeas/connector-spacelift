@@ -1,0 +1,53 @@
+apiVersion: keas.io/v1alpha1
+kind: EventType
+metadata:
+  name: spacelift-audit-0-1-0
+spec:
+  description: "Represents an audit log entry from Spacelift with context of the actor, time and context aware data items"
+  version: '0.1.0'
+  type: AuditEntry
+  sources:
+    - Spacelift
+  schema: |
+    {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "$id": "https://schemas.keas.io/spacelift/audit-entry/0.1.0",
+        "title": "Spacelift - AuditEntry",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+            "account": {
+                "type": "string"
+            },
+            "action": {
+                "type": "string"
+            },
+            "actor": {
+                "type": "string"
+            },
+            "context": {
+                "type": "object",
+                "additionalProperties": true
+            },
+            "data": {
+                "type": "object",
+                "additionalProperties": true
+            },
+            "remoteIP": {
+                "type": "string"
+            },
+            "timestamp": {
+                "type": "string",
+                "format": "date-time"
+            }
+        },
+        "required": [
+            "account",
+            "action",
+            "actor",
+            "context",
+            "data",
+            "remoteIP",
+            "timestamp"
+        ]
+    }
