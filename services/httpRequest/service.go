@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/gofiber/fiber/v2"
 	log "github.com/projectkeas/sdks-service/logger"
 	"go.uber.org/zap"
 )
@@ -53,6 +54,20 @@ func PostJson(uri string, payload interface{}, headers map[string]string) (int, 
 		} else {
 			return resp.StatusCode, "", err
 		}
+	}
+
+	if resp.StatusCode == 400 {
+		responseData := map[string]interface{}{}
+		err := json.Unmarshal(responseBody, &responseData)
+		if err == nil {
+			// We need to check for a suitable ingestion rejection reason
+			val, found := responseData["reason"]
+			if found && val.(string) == "ingestion-service-rejected" {
+				return fiber.StatusAccepted, "", nil
+			}
+		}
+
+		return resp.StatusCode, string(responseBody), nil
 	}
 
 	return resp.StatusCode, "", nil
