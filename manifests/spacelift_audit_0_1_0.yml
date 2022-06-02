@@ -1,3 +1,4 @@
+{{ if .Values.eventTypes.spacelift.audit }}
 apiVersion: keas.io/v1alpha1
 kind: EventType
 metadata:
@@ -51,3 +52,4 @@ spec:
             "timestamp"
         ]
     }
+{{- end }}
