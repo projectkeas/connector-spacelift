@@ -4,59 +4,60 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/projectkeas/connector-spacelift/services/httpRequest"
-	"github.com/projectkeas/sdks-service/configuration"
+	"github.com/projectkeas/connector-spacelift/services/eventBuilder"
+	"github.com/projectkeas/sdks-service/eventPublisher"
 	"github.com/projectkeas/sdks-service/server"
 )
 
-var (
-	apiKey    string
-	targetUri string
-)
-
 func New(server *server.Server) func(c *fiber.Ctx) error {
-	server.GetConfiguration().RegisterChangeNotificationHandler(func(config configuration.ConfigurationRoot) {
-		apiKey = config.GetStringValueOrDefault("ingestion.auth.token", "")
-		targetUri = config.GetStringValueOrDefault("ingestion.uri", "http://keas-ingestion.keas.svc.cluster.local/ingest")
-	})
+	// publisher setup
+	nc, err := server.GetService(eventPublisher.SERVICE_NAME)
+	if err != nil {
+		panic(err)
+	}
+	client := (*nc).(eventPublisher.EventPublisherService)
 
-	return func(c *fiber.Ctx) error {
-		c.Accepts("application/json")
+	return func(context *fiber.Ctx) error {
+		context.Accepts("application/json")
+		errorResult := map[string]interface{}{
+			"message": "An error occurred whilst processing your request",
+		}
 
 		payload := map[string]interface{}{}
-		c.BodyParser(&payload)
+		context.BodyParser(&payload)
 
 		unixTimestamp, found := payload["timestamp"]
-		var eventTime string
+		var eventTime time.Time
 		if found {
 			// Format of the timestamp is in milliseconds
 			// The json value is actually a float64 so we need to convert through that first
 			ut := int64(unixTimestamp.(float64))
 			utt := time.UnixMilli(ut)
-			eventTime = utt.UTC().Format(time.RFC3339)
+			eventTime = utt.UTC()
 		} else {
-			eventTime = time.Now().UTC().Format(time.RFC3339)
+			eventTime = time.Now().UTC()
 		}
 
-		payload["timestamp"] = eventTime
-
-		envelope := map[string]interface{}{
-			"metadata": map[string]string{
-				"source":    "Spacelift",
-				"version":   "0.1.0",
-				"type":      "AuditEntry",
-				"eventTime": eventTime,
-			},
-			"payload": &payload,
+		cloudEvent, validationErr := eventBuilder.NewCloudEventFromWebhook(payload, "audit", eventTime)
+		if validationErr != nil {
+			errorResult["reason"] = "Unable to validate as a cloud event"
+			errors := []map[string]string{}
+			for key, value := range validationErr {
+				errors = append(errors, map[string]string{
+					"attribute": key,
+					"error":     value.Error(),
+				})
+			}
+			errorResult["errors"] = errors
+			return context.Status(fiber.StatusBadRequest).JSON(errorResult)
 		}
 
-		statusCode, responseBody, err := httpRequest.PostJson(targetUri, envelope, map[string]string{
-			"Authorization": "ApiKey " + apiKey,
-		})
+		if !client.Publish(cloudEvent) {
+			errorResult["reason"] = "publish"
+			return context.Status(fiber.StatusInternalServerError).JSON(errorResult)
+		}
 
-		c.Response().Header.Set("Content-Type", "application/json")
-		c.Send([]byte(responseBody))
-		c.SendStatus(statusCode)
-		return err
+		context.Status(fiber.StatusAccepted).JSON(cloudEvent)
+		return nil
 	}
 }

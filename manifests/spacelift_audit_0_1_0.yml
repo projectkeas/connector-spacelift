@@ -4,16 +4,13 @@ kind: EventType
 metadata:
   name: spacelift-audit-0-1-0
 spec:
-  description: "Represents an audit log entry from Spacelift with context of the actor, time and context aware data items"
-  version: '0.1.0'
-  type: AuditEntry
-  sources:
-    - Spacelift
+  schemaUri: https://schemas.keas.io/spacelift/audit/0.1.0
+  description: Represents a flexibile audit entry in the Spacelift System
   schema: |
     {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "$id": "https://schemas.keas.io/spacelift/audit-entry/0.1.0",
-        "title": "Spacelift - AuditEntry",
+        "$id": "https://schemas.keas.io/spacelift/audit/0.1.0",
+        "title": "Spacelift - AuditEntry - 0.1.0",
         "type": "object",
         "additionalProperties": false,
         "properties": {
@@ -38,8 +35,7 @@ spec:
                 "type": "string"
             },
             "timestamp": {
-                "type": "string",
-                "format": "date-time"
+                "type": "number"
             }
         },
         "required": [

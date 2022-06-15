@@ -4,6 +4,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/projectkeas/connector-spacelift/handlers/auditTrail"
 	"github.com/projectkeas/connector-spacelift/handlers/hmac"
+	"github.com/projectkeas/sdks-service/eventPublisher"
 	"github.com/projectkeas/sdks-service/server"
 )
 
@@ -24,5 +25,9 @@ func main() {
 		})
 	})
 
-	app.Build().Run()
+	server := app.Build()
+
+	server.RegisterService(eventPublisher.SERVICE_NAME, eventPublisher.New(server.GetConfiguration()))
+
+	server.Run()
 }
