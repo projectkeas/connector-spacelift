@@ -6,7 +6,7 @@ require (
 	github.com/cloudevents/sdk-go/v2 v2.10.1
 	github.com/gofiber/fiber/v2 v2.34.1
 	github.com/google/uuid v1.3.0
-	github.com/projectkeas/sdks-service v0.0.0-20220617133508-d482b4431396
+	github.com/projectkeas/sdks-service v0.0.0-20220704165653-859f3cee6189
 	go.uber.org/zap v1.21.0
 )
 
@@ -35,7 +35,7 @@ require (
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
-	github.com/open-policy-agent/opa v0.41.0 // indirect
+	github.com/open-policy-agent/opa v0.42.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/rcrowley/go-metrics v0.0.0-20201227073835-cf1acfcdf475 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
