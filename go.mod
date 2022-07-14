@@ -6,7 +6,7 @@ require (
 	github.com/cloudevents/sdk-go/v2 v2.10.1
 	github.com/gofiber/fiber/v2 v2.35.0
 	github.com/google/uuid v1.3.0
-	github.com/projectkeas/sdks-service v0.0.0-20220713123658-602cdc51e835
+	github.com/projectkeas/sdks-service v0.0.0-20220714054439-540372bd28e5
 	go.uber.org/zap v1.21.0
 )
 
@@ -59,8 +59,8 @@ require (
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	k8s.io/api v0.24.2 // indirect
-	k8s.io/apimachinery v0.24.2 // indirect
+	k8s.io/api v0.24.3 // indirect
+	k8s.io/apimachinery v0.24.3 // indirect
 	k8s.io/client-go v0.24.1 // indirect
 	k8s.io/klog/v2 v2.60.1 // indirect
 	k8s.io/kube-openapi v0.0.0-20220614142933-1062c7ade5f8 // indirect
